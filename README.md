@@ -15,7 +15,6 @@
 **Official PyTorch implementation of "SpecPL: Disentangling Spectral Granularity for Prompt Learning" (ICML 2026).**
 
 </div>
----
 
 > **🚧 Code Coming Soon**  
 > We are currently cleaning up the codebase for public release. The core implementation, pre-trained weights, and detailed instructions for reproducing the experiments will be made available here shortly.
