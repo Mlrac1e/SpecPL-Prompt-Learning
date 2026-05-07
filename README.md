@@ -9,10 +9,10 @@
 <br>
 
 [![Conference](https://img.shields.io/badge/ICML-2026-blue.svg)](#)
-[![Paper](https://img.shields.io/badge/arXiv-Coming_Soon-b31b1b.svg)](#)
+[![Paper](https://img.shields.io/badge/arXiv-2605.04504-b31b1b.svg)](https://arxiv.org/abs/2605.04504)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-**Official PyTorch implementation of "SpecPL: Disentangling Spectral Granularity for Prompt Learning" (ICML 2026).**
+**Official PyTorch implementation of "SpecPL: Disentangling Spectral Granularity for Prompt Learning" (ICML 2026).** Paper: [arXiv:2605.04504](https://arxiv.org/abs/2605.04504).
 
 </div>
 
@@ -31,7 +31,7 @@
 ## ⏳ News & Timeline
 
 - **[May 2026]** SpecPL has been accepted to **ICML 2026**! 🎉
-- **[TBD]** Release arXiv preprint.
+- **[May 2026]** arXiv preprint available: [SpecPL: Disentangling Spectral Granularity for Prompt Learning](https://arxiv.org/abs/2605.04504).
 - **[TBD]** Release the core training and evaluation code.
 
 
@@ -71,5 +71,6 @@ If you find this project helpful for your research, please consider citing our p
   title={SpecPL: Disentangling Spectral Granularity for Prompt Learning},
   author={Zhou, Jingtao and Kang, Xirui and Huang, Feiyang and Po, Lai-Man},
   booktitle={Proceedings of the 43rd International Conference on Machine Learning (ICML)},
-  year={2026}
+  year={2026},
+  url={https://arxiv.org/abs/2605.04504}
 }
