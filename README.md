@@ -67,10 +67,12 @@ cd ..
 
 If you find this project helpful for your research, please consider citing our paper:
 ```bibtex
-@inproceedings{zhou2026specpl,
-  title={SpecPL: Disentangling Spectral Granularity for Prompt Learning},
-  author={Zhou, Jingtao and Kang, Xirui and Huang, Feiyang and Po, Lai-Man},
-  booktitle={Proceedings of the 43rd International Conference on Machine Learning (ICML)},
-  year={2026},
-  url={https://arxiv.org/abs/2605.04504}
+@misc{zhou2026specpldisentanglingspectralgranularity,
+      title={SpecPL: Disentangling Spectral Granularity for Prompt Learning}, 
+      author={Jingtao Zhou and Xirui Kang and Feiyang Huang and Lai-Man Po},
+      year={2026},
+      eprint={2605.04504},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2605.04504}, 
 }
