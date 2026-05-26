@@ -1,0 +1,43 @@
+# Jupyter
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*~
+
+# Local backup / duplicate sources (e.g. *-Copy1.py, maple_specpl-Copy2.py)
+*[Cc]opy*.py
+*-checkpoint.*
+
+# Training outputs & checkpoints
+output/
+output_specpl/
+**/output_specpl/
+stat/output/
+*.pth
+*.pt
+*.ckpt
+*.tar
+
+# Logs
+*.log
+log.txt
+log.txt-*
+
+# Local data & model caches (set real paths via DATA_ROOT / CLIP_ROOT)
+# Do not commit downloaded weights or datasets.

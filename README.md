@@ -16,63 +16,176 @@
 
 </div>
 
-> **🚧 Code Coming Soon**  
-> We are currently cleaning up the codebase for public release. The core implementation, pre-trained weights, and detailed instructions for reproducing the experiments will be made available here shortly.
+## Overview
 
-## 📖 TL;DR
+SpecPL is a granularity-aware plug-in for CLIP-based prompt learning. It uses a frozen VAE as a spatial-spectral proxy to separate low-frequency semantic cues from high-frequency discriminative details, then uses these signals to guide prompt learning during training. SpecPL adds no inference-time overhead after training.
 
-**SpecPL** is a granularity-aware prompt learning framework designed to bridge the gap in fine-grained visual discrimination for Vision-Language Models (VLMs). By leveraging a frozen VAE as a spatial-spectral proxy, SpecPL disentangles visual representations into low-frequency semantics (Base) and high-frequency discriminative details (Detail), significantly enhancing adaptation performance on fine-grained tasks without introducing additional inference overhead.
+This repository currently supports SpecPL integrations for:
 
-<div align="center">
-  <img src="docs/assets/main.png" width="80%" alt="SpecPL Architecture">
-  <p><em>Illustration of the Spatial-Spectral Proxy and Granularity Disentanglement.</em></p>
-</div>
+| Family | Vanilla trainer | SpecPL trainer | Entry point |
+| :-- | :-- | :-- | :-- |
+| CoOp | `trainers/coop.py` (`CoOp`) | `trainers/coop_specpl.py` (`CoOpSpecPL`) | `train.py` |
+| CoCoOp | `trainers/cocoop.py` (`CoCoOp`) | `trainers/cocoop_specpl.py` (`CoCoOpSpecPL`) | `train.py` |
+| MaPLe | `trainers/maple.py` (`MaPLe`) | `trainers/maple_specpl.py` (`MaPLeSpecPL`) | `train.py` |
+| MMRL | `MMRL/trainers/mmrl.py` (`MMRL`) | `MMRL/trainers/mmrl_specpl.py` (`MMRLSpecPL`) | `MMRL/train.py` |
 
-## ⏳ News & Timeline
+Final benchmark numbers will be added after the camera-ready release.
 
-- **[May 2026]** SpecPL has been accepted to **ICML 2026**! 🎉
-- **[May 2026]** arXiv preprint available: [SpecPL: Disentangling Spectral Granularity for Prompt Learning](https://arxiv.org/abs/2605.04504).
-- **[TBD]** Release the core training and evaluation code.
+## Requirements
 
+We recommend Python 3.9 and PyTorch 2.1.2 with CUDA 11.8.
 
-## ⚙️ Requirements
-
-We recommend using **Python 3.9** and **PyTorch 2.1.2** with CUDA 11.8. 
-
-**1. Create a Conda environment:**
 ```bash
 conda create -n specpl python=3.9 -y
 conda activate specpl
-```
 
-**2. Install PyTorch & Torchvision:**
+pip install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu118
+pip install -r requirements.txt
 
-```bash
-pip install torch==2.1.2 torchvision==0.16.2 --index-url [https://download.pytorch.org/whl/cu118](https://download.pytorch.org/whl/cu118)
-```
-**3.Install standard dependencies:**
-
-```bash
-pip install diffusers==0.35.2 ftfy==6.3.1 numpy==2.3.4 Pillow==12.0.0 regex==2025.10.23 scikit-learn==1.7.2 scipy==1.16.2 timm==1.0.21 tqdm==4.64.1 yacs==0.1.8
-```
-**Install Dassl.pytorch:**
-SpecPL relies on the Dassl toolbox for prompt learning operations. Please install it from source:
-```bash
-git clone [https://github.com/KaiyangZhou/Dassl.pytorch.git](https://github.com/KaiyangZhou/Dassl.pytorch.git)
-cd Dassl.pytorch/
+git clone https://github.com/KaiyangZhou/Dassl.pytorch.git
+cd Dassl.pytorch
 python setup.py develop
 cd ..
 ```
-## 📍 Citation
 
-If you find this project helpful for your research, please consider citing our paper:
+## Repository Layout
+
+MMRL keeps its own entry point and configs because it uses a different trainer stack. CoOp, CoCoOp, and MaPLe share the top-level entry point.
+
+```text
+SpecPL-Prompt-Learning/
+├── train.py                         # CoOp / CoCoOp / MaPLe entry point
+├── configs/
+│   ├── datasets/
+│   └── trainers/
+├── datasets/
+├── trainers/                        # CoOp / CoCoOp / MaPLe + SpecPL
+│   ├── coop.py
+│   ├── coop_specpl.py
+│   ├── cocoop.py
+│   ├── cocoop_specpl.py
+│   ├── maple.py
+│   └── maple_specpl.py
+├── scripts/
+│   ├── coop/
+│   ├── cocoop/
+│   └── maple/
+├── docs/
+└── MMRL/
+    ├── train.py                     # MMRL entry point
+    ├── configs/
+    ├── datasets/
+    ├── trainers/
+    │   ├── mmrl.py
+    │   └── mmrl_specpl.py
+    └── scripts/mmrl/
+```
+
+## Paths And Environment Variables
+
+All public scripts use placeholder paths and can be configured through environment variables:
+
+```bash
+export DATA_ROOT=path/to/data        # dataset root containing the prompt-learning datasets
+export CLIP_ROOT=path/to/clip        # optional cache directory for OpenAI CLIP weights
+export HF_ENDPOINT=https://...       # optional HuggingFace mirror, if needed
+```
+
+If `CLIP_ROOT` is not set, CLIP weights are cached under `~/.cache/clip`. The VAE teacher used by SpecPL defaults to `REPA-E/e2e-qwenimage-vae` and follows the standard HuggingFace cache behavior. For offline use, set `VAE_PRETRAINED_ID` in the corresponding config to a local model path.
+
+## Running Base-to-Novel Experiments
+
+All maintained Base-to-Novel scripts take a dataset name as the first argument and a seed as the second argument.
+
+```bash
+export DATA_ROOT=path/to/data
+export CLIP_ROOT=path/to/clip
+```
+
+### CoOp
+
+```bash
+sh scripts/coop/vanilla_base2new_train.sh imagenet 1
+sh scripts/coop/vanilla_base2new_test.sh  imagenet 1
+
+sh scripts/coop/specpl_base2new_train.sh  imagenet 1
+sh scripts/coop/specpl_base2new_test.sh   imagenet 1
+```
+
+### CoCoOp
+
+```bash
+sh scripts/cocoop/vanilla_base2new_train.sh oxford_pets 1
+sh scripts/cocoop/vanilla_base2new_test.sh  oxford_pets 1
+
+sh scripts/cocoop/specpl_base2new_train.sh  oxford_pets 1
+sh scripts/cocoop/specpl_base2new_test.sh   oxford_pets 1
+```
+
+### MaPLe
+
+```bash
+sh scripts/maple/vanilla_base2new_train.sh caltech101 1
+sh scripts/maple/vanilla_base2new_test.sh  caltech101 1
+
+sh scripts/maple/specpl_base2new_train.sh  caltech101 1
+sh scripts/maple/specpl_base2new_test.sh   caltech101 1
+```
+
+### MMRL
+
+Run MMRL commands from the `MMRL/` directory:
+
+```bash
+cd MMRL
+
+sh scripts/mmrl/vanilla_base2new_train.sh fgvc_aircraft 1
+sh scripts/mmrl/vanilla_base2new_test.sh  fgvc_aircraft 1
+
+sh scripts/mmrl/specpl_base2new_train.sh  fgvc_aircraft 1
+sh scripts/mmrl/specpl_base2new_test.sh   fgvc_aircraft 1
+```
+
+For full reproduction details, see [`docs/SpecPL.md`](docs/SpecPL.md).
+
+## Result Parsing
+
+The maintained result parser is available in the MMRL sub-codebase:
+
+```bash
+cd MMRL
+python parse_test_res.py output_specpl/base2new/test_new/<DATASET>/shots_16/<TRAINER>/<CFG>/
+```
+
+Top-level CoOp/CoCoOp/MaPLe runs follow the same output layout, so you can either parse copied outputs inside `MMRL/` or use the parser as a reference for your own result aggregation.
+
+## Citation
+
+If this project is useful for your research, please cite:
+
 ```bibtex
-@misc{zhou2026specpldisentanglingspectralgranularity,
-      title={SpecPL: Disentangling Spectral Granularity for Prompt Learning}, 
-      author={Jingtao Zhou and Xirui Kang and Feiyang Huang and Lai-Man Po},
-      year={2026},
-      eprint={2605.04504},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2605.04504}, 
+@inproceedings{zhou2026specpl,
+    title     = {SpecPL: Disentangling Spectral Granularity for Prompt Learning},
+    author    = {Zhou, Jingtao and Kang, Xirui and Huang, Feiyang and Po, Lai-Man},
+    booktitle = {Proceedings of the International Conference on Machine Learning (ICML)},
+    year      = {2026}
 }
+
+@misc{zhou2026specpldisentanglingspectralgranularity,
+    title         = {SpecPL: Disentangling Spectral Granularity for Prompt Learning},
+    author        = {Jingtao Zhou and Xirui Kang and Feiyang Huang and Lai-Man Po},
+    year          = {2026},
+    eprint        = {2605.04504},
+    archivePrefix = {arXiv},
+    primaryClass  = {cs.CV},
+    url           = {https://arxiv.org/abs/2605.04504}
+}
+```
+
+## Acknowledgements
+
+This implementation builds on [CoOp / CoCoOp](https://github.com/KaiyangZhou/CoOp), [MaPLe](https://github.com/muzairkhattak/multimodal-prompt-learning), [MMRL](https://github.com/Kingcong/MMRL), [OpenAI CLIP](https://github.com/openai/CLIP), and [Dassl.pytorch](https://github.com/KaiyangZhou/Dassl.pytorch).
+
+## Contact
+
+Please open an issue for questions about installation, training, or reproduction.
