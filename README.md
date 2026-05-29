@@ -10,6 +10,7 @@
 
 [![Conference](https://img.shields.io/badge/ICML-2026-blue.svg)](#)
 [![Paper](https://img.shields.io/badge/arXiv-2605.04504-b31b1b.svg)](https://arxiv.org/abs/2605.04504)
+[![Weights](https://img.shields.io/badge/HuggingFace-Weights-yellow.svg)](https://huggingface.co/feiyhuang/specpl-prompt-learning-weights)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 **Official PyTorch implementation of "SpecPL: Disentangling Spectral Granularity for Prompt Learning" (ICML 2026).** Paper: [arXiv:2605.04504](https://arxiv.org/abs/2605.04504).
@@ -92,6 +93,23 @@ export HF_ENDPOINT=https://...       # optional HuggingFace mirror, if needed
 ```
 
 If `CLIP_ROOT` is not set, CLIP weights are cached under `~/.cache/clip`. The VAE teacher used by SpecPL defaults to `REPA-E/e2e-qwenimage-vae` and follows the standard HuggingFace cache behavior. For offline use, set `VAE_PRETRAINED_ID` in the corresponding config to a local model path.
+
+## Pretrained Checkpoints
+
+We provide pretrained checkpoints on Hugging Face:
+
+- https://huggingface.co/feiyhuang/specpl-prompt-learning-weights
+
+Recommended local download (keeps directory structure):
+
+```bash
+# Login first if the repo is private
+huggingface-cli login
+
+huggingface-cli download feiyhuang/specpl-prompt-learning-weights \
+  --repo-type model \
+  --local-dir ./pretrained/specpl-prompt-learning-weights
+```
 
 ## Running Base-to-Novel Experiments
 
